@@ -7,29 +7,29 @@ import { renderDashboard } from './controllers/dashboardController.js'; // Impor
 
 const app = express();
 
-// Configura a pasta 'public' como estática
+// Configura a pasta 'public' como estática para servir arquivos estáticos
 app.use(express.static(path.join(path.resolve(), 'public')));
 
 // Middleware para parsing JSON
 app.use(express.json());
 
 // Configura o EJS como mecanismo de visualização
-app.set('view engine', 'ejs'); // Define o mecanismo de visualização
+app.set('view engine', 'ejs'); // Define o mecanismo de visualização como EJS
 app.set('views', path.join(path.resolve(), 'src', 'views')); // Define o diretório das views
 
 // Rota do AdminJS
 app.use(adminJs.options.rootPath, adminRouter);
 
 // Rota para o dashboard
-app.get('/dashboard', renderDashboard); // Adiciona a rota do dashboard
+app.get('/dashboard', renderDashboard); // Adiciona a rota para renderizar o dashboard
 
 // Sincronização com o banco de dados
 sequelize.sync()
   .then(() => {
-    console.log('Database synchronized');
+    console.log('Database synchronized'); // Log de sucesso
   })
   .catch((error) => {
-    console.error('Error synchronizing database:', error);
+    console.error('Error synchronizing database:', error); // Log de erro
   });
 
-export default app;
+export default app; // Exporta a aplicação Express
