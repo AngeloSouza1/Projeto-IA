@@ -1,44 +1,34 @@
-import { DataTypes } from 'sequelize';
+// src/models/User.js
+import { DataTypes, Model } from 'sequelize';
 import sequelize from '../config/database.js';
 
-const User = sequelize.define('User', {
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
-  },
+class User extends Model {}
+
+User.init({
   name: {
-    type: DataTypes.STRING(100),
+    type: DataTypes.STRING,
     allowNull: false,
-    validate: {
-      notEmpty: true, // Validação para garantir que o nome não esteja vazio
-    },
   },
   email: {
     type: DataTypes.STRING,
     allowNull: false,
     unique: true,
-    validate: {
-      isEmail: true, // Validação para garantir um formato de email válido
-    },
   },
   password_digest: {
     type: DataTypes.STRING,
-    allowNull: false, // Armazena a senha em formato hash
+    allowNull: false,
   },
   role: {
-    type: DataTypes.STRING(50),
+    type: DataTypes.STRING,
     allowNull: false,
     defaultValue: 'admin',
-    validate: {
-      isIn: [['admin', 'user', 'tmp']], // Limita os valores de role
-    },
   },
 }, {
-  timestamps: true,
-  underscored: true, // Configuração para usar snake_case automaticamente
-  createdAt: 'created_at',
-  updatedAt: 'updated_at',
+  sequelize,
+  modelName: 'User',
+  tableName: 'users',
+  underscored: true, // Adiciona automaticamente snake_case
+  timestamps: true, // Usa as colunas de timestamp
 });
 
 export default User;

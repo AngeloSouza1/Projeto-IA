@@ -1,3 +1,4 @@
+// src/config/admin.js
 import AdminJS from 'adminjs';
 import AdminJSExpress from '@adminjs/express';
 import AdminJSSequelize from '@adminjs/sequelize';
@@ -15,17 +16,14 @@ const adminJs = new AdminJS({
       resource: User,
       options: {
         properties: {
-          id: {
-            isVisible: { list: true, edit: false, filter: true, show: true },
-          },
-          email: {
-            isVisible: { list: true, edit: true, filter: true, show: true },
-          },
+          id: { isVisible: { list: true, edit: false, filter: true, show: true } },
+          email: { isVisible: { list: true, edit: true, filter: true, show: true } },
+          name: { isVisible: { list: true, edit: true, filter: true, show: true } },
           password: {
             type: 'string',
             isVisible: { list: false, edit: true, filter: false, show: false },
           },
-          password_digest: {  // Atualize para 'password_digest' para corresponder ao banco de dados
+          password_digest: {
             isVisible: false,
           },
           role: {
@@ -35,27 +33,22 @@ const adminJs = new AdminJS({
               { value: 'user', label: 'User' },
               { value: 'tmp', label: 'TMP' },
             ],
-            default: 'user',
+            default: 'admin',
           },
-          createdAt: {
-            isVisible: { list: true, edit: false, filter: true, show: true },
-            label: 'Created At',
-          },
-          updatedAt: {
-            isVisible: { list: true, edit: false, filter: true, show: true },
-            label: 'Updated At',
-          },
+          createdAt: { isVisible: { list: true, edit: false, filter: true, show: true } },
+          updatedAt: { isVisible: { list: true, edit: false, filter: true, show: true } },
         },
         actions: {
           new: {
+            isAccessible: ({ currentAdmin }) => currentAdmin && currentAdmin.role === 'admin', // Apenas 'admin' pode criar
             before: async (request) => {
               if (!request.payload.role) {
-                request.payload.role = 'user';
+                request.payload.role = 'admin';
               }
               if (request.payload.password) {
                 request.payload = {
                   ...request.payload,
-                  password_digest: await bcrypt.hash(request.payload.password, 10),  // Atualize para 'password_digest'
+                  password_digest: await bcrypt.hash(request.payload.password, 10),
                 };
                 delete request.payload.password;
               } else {
@@ -63,6 +56,12 @@ const adminJs = new AdminJS({
               }
               return request;
             },
+          },
+          edit: {
+            isAccessible: ({ currentAdmin }) => currentAdmin && currentAdmin.role === 'admin', // Apenas 'admin' pode editar
+          },
+          delete: {
+            isAccessible: ({ currentAdmin }) => currentAdmin && currentAdmin.role === 'admin', // Apenas 'admin' pode deletar
           },
         },
       },
@@ -74,9 +73,7 @@ const sessionOptions = {
   resave: false,
   saveUninitialized: true,
   secret: process.env.SECRET_KEY,
-  cookie: {
-    secure: process.env.NODE_ENV === 'production',
-  },
+  cookie: { secure: process.env.NODE_ENV === 'production' },
 };
 
 const adminRouter = AdminJSExpress.buildAuthenticatedRouter(
@@ -84,7 +81,6 @@ const adminRouter = AdminJSExpress.buildAuthenticatedRouter(
   {
     authenticate: async (email, password) => {
       const user = await User.findOne({ where: { email } });
-      // Atualize para comparar com 'user.password_digest'
       if (user && bcrypt.compareSync(password, user.password_digest)) {
         return user;
       }
