@@ -1,0 +1,22 @@
+<!-- src/views/dashboard.ejs -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="/config/adminStyles.css"> <!-- Inclua seu CSS personalizado -->
+</head>
+<body>
+    <h1>Dashboard</h1>
+    <div>
+        <h2>Número de Leads Gerados: <%= totalLeads %></h2>
+    </div>
+    <div>
+        <h2>Número de Leads Convidados: <%= totalInvitedLeads %></h2>
+    </div>
+    <div>
+        <h2>Número de Leads que Aceitaram o Convite: <%= totalAcceptedInvites %></h2>
+    </div>
+</body>
+</html>

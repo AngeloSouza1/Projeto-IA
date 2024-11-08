@@ -100,14 +100,10 @@ const adminJs = new AdminJS({
       resource: CampaignLead,
       options: {
         properties: {
-              // Oculte os campos duplicados
-              created_at: { label: 'Created At', isVisible: { list: true, edit: false, filter: false, show: true } },
-              updated_at: { label: 'Updated At', isVisible: { list: true, edit: false, filter: false, show: true } },
-              //lead_id: { isVisible: { list: false, edit: false, filter: false, show: false } }, // Ocultar se não for necessário
-              //campaign_id: { isVisible: { list: false, edit: false, filter: false, show: false } }, // Ocultar se não for necessário
-              //email: { label: 'Email', isVisible: { list: true, edit: false, filter: false, show: true } },
-              //status: { label: 'Status', isVisible: { list: true, edit: true, filter: false, show: true } },
-              //leadName: { label: 'Lead Name', isVisible: { list: true, edit: true, filter: false, show: true } },
+          lead_id: { isVisible: { list: true, edit: false, filter: false, show: false } },
+          campaign_id: { isVisible: { list: true, edit: false, filter: false, show: false } },
+          created_at: { label: 'Created At', isVisible: { list: true, edit: false, filter: false, show: true } },
+          updated_at: { label: 'Updated At', isVisible: { list: true, edit: false, filter: false, show: true } },
         },
         actions: {
           new: {},
@@ -126,6 +122,9 @@ const sessionOptions = {
     secure: process.env.NODE_ENV === 'production',
   },
 };
+
+
+adminJs.watch()
 
 const adminRouter = AdminJSExpress.buildAuthenticatedRouter(
   adminJs,

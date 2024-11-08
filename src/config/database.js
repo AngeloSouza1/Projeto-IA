@@ -1,3 +1,4 @@
+// src/config/database.js
 import { Sequelize } from 'sequelize';
 import dotenv from 'dotenv';
 
@@ -14,5 +15,14 @@ const sequelize = new Sequelize(
     logging: false,
   }
 );
+
+// Sincroniza com o banco de dados
+sequelize.sync({ alter: true })
+  .then(() => {
+    console.log('Database synchronized successfully');
+  })
+  .catch((error) => {
+    console.error('Error synchronizing database:', error);
+  });
 
 export default sequelize;

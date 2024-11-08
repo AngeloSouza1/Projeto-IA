@@ -7,6 +7,7 @@ const CampaignLead = sequelize.define('CampaignLead', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   campaign_id: { type: DataTypes.INTEGER, references: { model: Campaign, key: 'id' } },
   lead_id: { type: DataTypes.INTEGER, references: { model: Lead, key: 'id' } },
+  accept_invite: { type: DataTypes.BOOLEAN } // Certifique-se de incluir isso
 }, {
   timestamps: true,
   createdAt: 'created_at',
