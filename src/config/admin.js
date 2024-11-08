@@ -12,7 +12,6 @@ import CampaignLead from '../models/CampaignLead.js';
 import campaignLabels from './campaignLabels.js';
 import userLabels from './userLabels.js';
 import leadLabels from './leadLabels.js';
-import campaignLeadLabels from './campaignLeadLabels.js';
 
 AdminJS.registerAdapter(AdminJSSequelize);
 
@@ -37,7 +36,7 @@ const adminJs = new AdminJS({
         grey20: '#9e9e9e',
         white: '#ffffff',
         bg: '#ffffff',
-        loginBg: '#ffffff'
+        loginBg: '#ffffff',
       },
       inputs: {
         backgroundColor: '#ffffff',
@@ -52,8 +51,8 @@ const adminJs = new AdminJS({
           email: { label: userLabels.email.label, description: userLabels.email.description },
           password: { label: userLabels.password.label, description: userLabels.password.description },
           role: { label: userLabels.role.label, description: userLabels.role.description },
-          createdAt: { label: userLabels.createdAt.label, description: userLabels.createdAt.description },
-          updatedAt: { label: userLabels.updatedAt.label, description: userLabels.updatedAt.description },
+          createdAt: { isVisible: { list: false, edit: false, filter: false, show: true }, label: userLabels.createdAt.label, description: userLabels.createdAt.description },
+          updatedAt: { isVisible: { list: false, edit: false, filter: false, show: true }, label: userLabels.updatedAt.label, description: userLabels.updatedAt.description },
         },
         actions: {
           new: {},
@@ -69,8 +68,8 @@ const adminJs = new AdminJS({
           phone: { label: leadLabels.phone.label, description: leadLabels.phone.description },
           source: { label: leadLabels.source.label, description: leadLabels.source.description },
           status: { label: leadLabels.status.label, description: leadLabels.status.description },
-          createdAt: { label: leadLabels.createdAt.label, description: leadLabels.createdAt.description },
-          updatedAt: { label: leadLabels.updatedAt.label, description: leadLabels.updatedAt.description },
+          createdAt: { isVisible: { list: false, edit: false, filter: false, show: true }, label: leadLabels.createdAt.label, description: leadLabels.createdAt.description },
+          updatedAt: { isVisible: { list: false, edit: false, filter: false, show: true }, label: leadLabels.updatedAt.label, description: leadLabels.updatedAt.description },
         },
         actions: {
           new: {},
@@ -88,6 +87,8 @@ const adminJs = new AdminJS({
           end_date: { label: campaignLabels.end_date.label, description: campaignLabels.end_date.description },
           status: { label: campaignLabels.status.label, description: campaignLabels.status.description },
           budget: { label: campaignLabels.budget.label, description: campaignLabels.budget.description },
+          createdAt: { isVisible: { list: false, edit: false, filter: false, show: true }, label: campaignLabels.createdAt.label, description: campaignLabels.createdAt.description },
+          updatedAt: { isVisible: { list: false, edit: false, filter: false, show: true }, label: campaignLabels.updatedAt.label, description: campaignLabels.updatedAt.description },
         },
         actions: {
           new: {},
@@ -99,12 +100,14 @@ const adminJs = new AdminJS({
       resource: CampaignLead,
       options: {
         properties: {
-          campaignId: { label: campaignLeadLabels.campaignId.label, description: campaignLeadLabels.campaignId.description },
-          leadName: { label: campaignLeadLabels.leadName.label, description: campaignLeadLabels.leadName.description },
-          email: { label: campaignLeadLabels.email.label, description: campaignLeadLabels.email.description },
-          status: { label: campaignLeadLabels.status.label, description: campaignLeadLabels.status.description },
-          createdAt: { label: campaignLeadLabels.createdAt.label, description: campaignLeadLabels.createdAt.description },
-          updatedAt: { label: campaignLeadLabels.updatedAt.label, description: campaignLeadLabels.updatedAt.description },
+              // Oculte os campos duplicados
+              created_at: { label: 'Created At', isVisible: { list: true, edit: false, filter: false, show: true } },
+              updated_at: { label: 'Updated At', isVisible: { list: true, edit: false, filter: false, show: true } },
+              //lead_id: { isVisible: { list: false, edit: false, filter: false, show: false } }, // Ocultar se não for necessário
+              //campaign_id: { isVisible: { list: false, edit: false, filter: false, show: false } }, // Ocultar se não for necessário
+              //email: { label: 'Email', isVisible: { list: true, edit: false, filter: false, show: true } },
+              //status: { label: 'Status', isVisible: { list: true, edit: true, filter: false, show: true } },
+              //leadName: { label: 'Lead Name', isVisible: { list: true, edit: true, filter: false, show: true } },
         },
         actions: {
           new: {},
