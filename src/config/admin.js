@@ -5,64 +5,92 @@ import AdminJSSequelize from '@adminjs/sequelize';
 import bcrypt from 'bcrypt';
 import sequelize from './database.js';
 import User from '../models/User.js';
+import Leads from '../models/Lead.js';
+import Campaigns from '../models/Campaign.js';
+import CampaignLead from '../models/CampaignLead.js';
+import campaignLabels from './campaignLabels.js';  // Importa as descrições
 
 AdminJS.registerAdapter(AdminJSSequelize);
 
 const adminJs = new AdminJS({
   databases: [sequelize],
   rootPath: '/admin',
+  branding: {
+    companyName: 'ProLeadNet',
+    logo: '',
+    softwareBrothers: false,
+    theme: {
+      colors: {
+        primary100: '#000000',
+        primary80: '#333333',
+        primary60: '#666666',
+        primary40: '#999999',
+        primary20: '#cccccc',
+        grey100: '#212121',
+        grey80: '#424242',
+        grey60: '#616161',
+        grey40: '#757575',
+        grey20: '#9e9e9e',
+        white: '#ffffff',
+        bg: '#ffffff',
+        loginBg: '#ffffff'
+      },
+      inputs: {
+        backgroundColor: '#ffffff',
+      },
+    },
+  },
   resources: [
     {
       resource: User,
       options: {
         properties: {
-          id: { isVisible: { list: true, edit: false, filter: true, show: true } },
-          email: { isVisible: { list: true, edit: true, filter: true, show: true } },
-          name: { isVisible: { list: true, edit: true, filter: true, show: true } },
-          password: {
-            type: 'string',
-            isVisible: { list: false, edit: true, filter: false, show: false },
-          },
-          password_digest: {
-            isVisible: false,
-          },
-          role: {
-            type: 'string',
-            availableValues: [
-              { value: 'admin', label: 'Admin' },
-              { value: 'user', label: 'User' },
-              { value: 'tmp', label: 'TMP' },
-            ],
-            default: 'admin',
-          },
-          createdAt: { isVisible: { list: true, edit: false, filter: true, show: true } },
-          updatedAt: { isVisible: { list: true, edit: false, filter: true, show: true } },
+          nome: { isVisible: false },
+          password: { type: 'string', isVisible: { list: false, edit: true, filter: false, show: false } },
+          password_digest: { isVisible: false },
         },
         actions: {
-          new: {
-            isAccessible: ({ currentAdmin }) => currentAdmin && currentAdmin.role === 'admin', // Apenas 'admin' pode criar
-            before: async (request) => {
-              if (!request.payload.role) {
-                request.payload.role = 'admin';
-              }
-              if (request.payload.password) {
-                request.payload = {
-                  ...request.payload,
-                  password_digest: await bcrypt.hash(request.payload.password, 10),
-                };
-                delete request.payload.password;
-              } else {
-                throw new Error("Password is required");
-              }
-              return request;
-            },
-          },
-          edit: {
-            isAccessible: ({ currentAdmin }) => currentAdmin && currentAdmin.role === 'admin', // Apenas 'admin' pode editar
-          },
-          delete: {
-            isAccessible: ({ currentAdmin }) => currentAdmin && currentAdmin.role === 'admin', // Apenas 'admin' pode deletar
-          },
+          new: {},
+          edit: {},
+        },
+      },
+    },
+    {
+      resource: Leads,
+      options: {
+        properties: {
+          nome: { isVisible: false }
+        },
+        actions: {
+          new: {},
+          edit: {},
+        },
+      },
+    },
+    {
+      resource: Campaigns,
+      options: {
+        properties: {
+          id: { isVisible: false },
+          name: { label: campaignLabels.name.label, description: campaignLabels.name.description },
+          start_date: { label: campaignLabels.start_date.label, description: campaignLabels.start_date.description },
+          end_date: { label: campaignLabels.end_date.label, description: campaignLabels.end_date.description },
+          status: { label: campaignLabels.status.label, description: campaignLabels.status.description },
+          budget: { label: campaignLabels.budget.label, description: campaignLabels.budget.description },
+        },
+        actions: {
+          new: {},
+          edit: {},
+        },
+      },
+    },
+    {
+      resource: CampaignLead,
+      options: {
+        properties: {},
+        actions: {
+          new: {},
+          edit: {},
         },
       },
     },
@@ -73,7 +101,9 @@ const sessionOptions = {
   resave: false,
   saveUninitialized: true,
   secret: process.env.SECRET_KEY,
-  cookie: { secure: process.env.NODE_ENV === 'production' },
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+  },
 };
 
 const adminRouter = AdminJSExpress.buildAuthenticatedRouter(

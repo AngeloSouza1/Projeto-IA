@@ -1,8 +1,12 @@
 import express from 'express';
 import { adminJs, adminRouter } from './config/admin.js';
 import sequelize from './config/database.js';
+import path from 'path'; 
 
 const app = express();
+
+// Configura a pasta 'public' como estática
+app.use(express.static(path.join(path.resolve(), 'public')));
 
 // Middleware para parsing JSON
 app.use(express.json());
