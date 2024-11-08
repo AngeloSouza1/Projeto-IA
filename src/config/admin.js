@@ -8,7 +8,11 @@ import User from '../models/User.js';
 import Leads from '../models/Lead.js';
 import Campaigns from '../models/Campaign.js';
 import CampaignLead from '../models/CampaignLead.js';
-import campaignLabels from './campaignLabels.js';  // Importa as descrições
+
+import campaignLabels from './campaignLabels.js';
+import userLabels from './userLabels.js';
+import leadLabels from './leadLabels.js';
+import campaignLeadLabels from './campaignLeadLabels.js';
 
 AdminJS.registerAdapter(AdminJSSequelize);
 
@@ -45,9 +49,11 @@ const adminJs = new AdminJS({
       resource: User,
       options: {
         properties: {
-          nome: { isVisible: false },
-          password: { type: 'string', isVisible: { list: false, edit: true, filter: false, show: false } },
-          password_digest: { isVisible: false },
+          email: { label: userLabels.email.label, description: userLabels.email.description },
+          password: { label: userLabels.password.label, description: userLabels.password.description },
+          role: { label: userLabels.role.label, description: userLabels.role.description },
+          createdAt: { label: userLabels.createdAt.label, description: userLabels.createdAt.description },
+          updatedAt: { label: userLabels.updatedAt.label, description: userLabels.updatedAt.description },
         },
         actions: {
           new: {},
@@ -59,7 +65,12 @@ const adminJs = new AdminJS({
       resource: Leads,
       options: {
         properties: {
-          nome: { isVisible: false }
+          email: { label: leadLabels.email.label, description: leadLabels.email.description },
+          phone: { label: leadLabels.phone.label, description: leadLabels.phone.description },
+          source: { label: leadLabels.source.label, description: leadLabels.source.description },
+          status: { label: leadLabels.status.label, description: leadLabels.status.description },
+          createdAt: { label: leadLabels.createdAt.label, description: leadLabels.createdAt.description },
+          updatedAt: { label: leadLabels.updatedAt.label, description: leadLabels.updatedAt.description },
         },
         actions: {
           new: {},
@@ -87,7 +98,14 @@ const adminJs = new AdminJS({
     {
       resource: CampaignLead,
       options: {
-        properties: {},
+        properties: {
+          campaignId: { label: campaignLeadLabels.campaignId.label, description: campaignLeadLabels.campaignId.description },
+          leadName: { label: campaignLeadLabels.leadName.label, description: campaignLeadLabels.leadName.description },
+          email: { label: campaignLeadLabels.email.label, description: campaignLeadLabels.email.description },
+          status: { label: campaignLeadLabels.status.label, description: campaignLeadLabels.status.description },
+          createdAt: { label: campaignLeadLabels.createdAt.label, description: campaignLeadLabels.createdAt.description },
+          updatedAt: { label: campaignLeadLabels.updatedAt.label, description: campaignLeadLabels.updatedAt.description },
+        },
         actions: {
           new: {},
           edit: {},
