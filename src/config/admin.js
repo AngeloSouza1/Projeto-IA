@@ -1,4 +1,5 @@
 // src/config/admin.js
+
 import AdminJS from 'adminjs';
 import AdminJSExpress from '@adminjs/express';
 import AdminJSSequelize from '@adminjs/sequelize';
@@ -8,13 +9,11 @@ import User from '../models/User.js';
 import Leads from '../models/Lead.js';
 import Campaigns from '../models/Campaign.js';
 import CampaignLead from '../models/CampaignLead.js';
-
-import campaignLabels from './campaignLabels.js';
-import userLabels from './userLabels.js';
-import leadLabels from './leadLabels.js';
+import Dashboard from '../components/Dashboard'; // Importe o componente do Dashboard
 
 AdminJS.registerAdapter(AdminJSSequelize);
 
+// Instanciando o AdminJS
 const adminJs = new AdminJS({
   databases: [sequelize],
   rootPath: '/admin',
@@ -43,20 +42,17 @@ const adminJs = new AdminJS({
       },
     },
   },
+  dashboard: {
+    component: Dashboard, // Adiciona o componente Dashboard aqui
+  },
   resources: [
     {
       resource: User,
       options: {
         properties: {
-          email: { label: userLabels.email.label, description: userLabels.email.description },
-          password: { label: userLabels.password.label, description: userLabels.password.description },
-          role: { label: userLabels.role.label, description: userLabels.role.description },
-          createdAt: { isVisible: { list: false, edit: false, filter: false, show: true }, label: userLabels.createdAt.label, description: userLabels.createdAt.description },
-          updatedAt: { isVisible: { list: false, edit: false, filter: false, show: true }, label: userLabels.updatedAt.label, description: userLabels.updatedAt.description },
-        },
-        actions: {
-          new: {},
-          edit: {},
+          email: { label: 'Email' },
+          password: { label: 'Password' },
+          role: { label: 'Role' },
         },
       },
     },
@@ -64,16 +60,10 @@ const adminJs = new AdminJS({
       resource: Leads,
       options: {
         properties: {
-          email: { label: leadLabels.email.label, description: leadLabels.email.description },
-          phone: { label: leadLabels.phone.label, description: leadLabels.phone.description },
-          source: { label: leadLabels.source.label, description: leadLabels.source.description },
-          status: { label: leadLabels.status.label, description: leadLabels.status.description },
-          createdAt: { isVisible: { list: false, edit: false, filter: false, show: true }, label: leadLabels.createdAt.label, description: leadLabels.createdAt.description },
-          updatedAt: { isVisible: { list: false, edit: false, filter: false, show: true }, label: leadLabels.updatedAt.label, description: leadLabels.updatedAt.description },
-        },
-        actions: {
-          new: {},
-          edit: {},
+          email: { label: 'Email' },
+          phone: { label: 'Phone' },
+          source: { label: 'Source' },
+          status: { label: 'Status' },
         },
       },
     },
@@ -81,18 +71,11 @@ const adminJs = new AdminJS({
       resource: Campaigns,
       options: {
         properties: {
-          id: { isVisible: false },
-          name: { label: campaignLabels.name.label, description: campaignLabels.name.description },
-          start_date: { label: campaignLabels.start_date.label, description: campaignLabels.start_date.description },
-          end_date: { label: campaignLabels.end_date.label, description: campaignLabels.end_date.description },
-          status: { label: campaignLabels.status.label, description: campaignLabels.status.description },
-          budget: { label: campaignLabels.budget.label, description: campaignLabels.budget.description },
-          createdAt: { isVisible: { list: false, edit: false, filter: false, show: true }, label: campaignLabels.createdAt.label, description: campaignLabels.createdAt.description },
-          updatedAt: { isVisible: { list: false, edit: false, filter: false, show: true }, label: campaignLabels.updatedAt.label, description: campaignLabels.updatedAt.description },
-        },
-        actions: {
-          new: {},
-          edit: {},
+          name: { label: 'Name' },
+          start_date: { label: 'Start Date' },
+          end_date: { label: 'End Date' },
+          status: { label: 'Status' },
+          budget: { label: 'Budget' },
         },
       },
     },
@@ -100,32 +83,17 @@ const adminJs = new AdminJS({
       resource: CampaignLead,
       options: {
         properties: {
-          lead_id: { isVisible: { list: true, edit: false, filter: false, show: false } },
-          campaign_id: { isVisible: { list: true, edit: false, filter: false, show: false } },
-          created_at: { label: 'Created At', isVisible: { list: true, edit: false, filter: false, show: true } },
-          updated_at: { label: 'Updated At', isVisible: { list: true, edit: false, filter: false, show: true } },
-        },
-        actions: {
-          new: {},
-          edit: {},
+          lead_id: { label: 'Lead ID' },
+          campaign_id: { label: 'Campaign ID' },
+          created_at: { label: 'Created At' },
+          updated_at: { label: 'Updated At' },
         },
       },
     },
   ],
 });
 
-const sessionOptions = {
-  resave: false,
-  saveUninitialized: true,
-  secret: process.env.SECRET_KEY,
-  cookie: {
-    secure: process.env.NODE_ENV === 'production',
-  },
-};
-
-
-adminJs.watch()
-
+// Setup de autenticação
 const adminRouter = AdminJSExpress.buildAuthenticatedRouter(
   adminJs,
   {
@@ -137,9 +105,7 @@ const adminRouter = AdminJSExpress.buildAuthenticatedRouter(
       return null;
     },
     cookiePassword: process.env.SECRET_KEY,
-  },
-  null,
-  sessionOptions
+  }
 );
 
 export { adminJs, adminRouter };
